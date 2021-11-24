@@ -1,0 +1,119 @@
+.team { 
+    margin: 0;
+    height: 65vh;
+    background-color: #8dd691;
+    justify-content: center;
+    align-items: center;
+    display: flex;
+    flex-direction: column;
+    overflow-x: visible;
+}
+
+.team__container { 
+    color: #000;
+    text-align: center;
+    overflow-x: visible;
+}
+
+.team__container h1 { 
+    margin: 0;
+    padding-bottom: 40px;
+    font-size: 3.2rem;
+}
+
+.team__container p{
+    font-size: 1.2rem; 
+    margin: 0;
+    padding: 5px;
+    width: 80%;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.team__imgContainer {
+    display: flex;
+    flex-direction: row;
+    overflow-x: visible;
+    justify-content: center;
+    align-items: center;
+}
+
+.team__imgIndividual { 
+    height: auto;
+    width: 20vw;
+    overflow-x: visible;
+    justify-content: center;
+    align-items: center;
+    padding-right: 50px;
+    padding-left: 50px;
+}
+
+.team__imgContainer img{ 
+    width: 20vw;
+    height: auto;
+    border-radius: 50px;
+    justify-content: center;
+    align-items: center;
+}
+
+.team__imgContainer figcaption { 
+    text-align: center;
+    font-size: 1.5rem;
+    padding-top: 20px;
+}
+
+.team-linksWrapper { 
+    padding-top: 10px;
+    overflow-x: visible;
+
+}
+.team-links {
+    color: #000;
+    text-decoration: none;
+    padding: 0.5rem 1rem;
+    font-size: 1.5rem;
+}
+
+@media screen and (max-width: 960px) {
+    .team { 
+        flex-direction: column;
+        height: 100%;
+    }
+
+    .team__container { 
+        width: 100vw;
+        height: 100%;
+        overflow-x: visible;
+    }
+
+    .team__container h1 { 
+        margin-top: 50px;
+        padding-bottom: 20px;
+    }
+
+    .team__container p { 
+        margin-top: 10px;
+        margin-bottom: 10px;
+    }
+
+    .team__imgContainer { 
+        padding-bottom: 50px;
+    }
+
+    .team__imgIndividual { 
+        width: 30vw;
+        padding-right: 20px;
+        padding-left: 20px;
+    }
+    
+    .team__imgContainer img{ 
+        width: 30vw;
+        border-radius: 20px;
+    }
+    
+    .team__imgContainer figcaption { 
+        text-align: center;
+        font-size: 1.5rem;
+        padding-top: 20px;
+    }
+}

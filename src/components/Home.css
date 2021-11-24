@@ -1,0 +1,22 @@
+.homeBg { 
+    height: 94vh;
+    width: auto;
+    margin: 0;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+    object-fit: contain;
+    z-index: -5;
+    position: relative;
+    background-image: url("../images/bgBitbot.jpeg");
+}
+
+.homeBg h1 { 
+    margin: 0;
+}
+
+@media screen and (max-width: 675px) {
+    .homeBg { 
+        background-image: url("../images/bgBitbot.jpeg");
+    }
+}
