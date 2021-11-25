@@ -9,24 +9,24 @@ import "./MintHome.css";
 
 import { ethers } from 'ethers';
 import EthereumSession from '../lib/eth-session.js';
-
+/*
 const mainnetConfig = {
     'CONTRACT': '0x68cf439BA5D2897524091Ef81Cb0A3D1F56E5500',
     'CHAIN_ID':  1,
     'RPC_URL':   process.env.INFURA_API_MAINNET_KEY,
     'ABI':       ContractAbi
 }
+*/
 
-/*
 const rinkebyConfig = {
     'CONTRACT': '0x91F9EA5939Cc707357808481b1B90ddaDa81bf33',
     'CHAIN_ID':  4,
     'RPC_URL':   process.env.INFURA_API_RINKEBY_KEY,
     'ABI':       ContractAbi.abi
 }
-*/
 
-const config = mainnetConfig;
+
+const config = rinkebyConfig;
 
 const CONNECTORS = {};
 CONNECTORS.Walletlink = new WalletLinkConnector({
@@ -264,44 +264,50 @@ export default function MintHome () {
         }
     }
 
-    const oneText = howManyTokens < 2 && howManyTokens > 0 ? "MINT " + howManyTokens + " BIT BOT!" : "MINT " + howManyTokens + " BIT BOTS!"
-    const zeroText = howManyTokens < 1 ? "MUST MINT ATLEAST 1 BIT BOT" : oneText
+    const oneTextSilver = howManyTokens < 2 && howManyTokens > 0 ? "MINT " + howManyTokens + " SILVER PENDANTS!" : "MINT " + howManyTokens + " SILVER PENDANTS!";
+    const zeroTextSilver = howManyTokens < 1 ? "MUST MINT ATLEAST 1 SILVER PENDANT" : oneTextSilver;
+    const buttonTextSilver = signedIn ? zeroTextSilver : "CONNECT WALLET TO MINT"
 
-    const paraText = signedIn ? "INPUT NUMBER OF BIT BOTS TO MINT (0.015 ETH): " : "CONNECT WALLET ABOVE TO MINT BIT BOTS!"
-    const buttonText = signedIn ? zeroText : "CONNECT WALLET TO MINT"
+    const oneTextGold = howManyTokens < 2 && howManyTokens > 0 ? "MINT " + howManyTokens + " GOLD PENDANTS!" : "MINT " + howManyTokens + " GOLD PENDANTS!";
+    const zeroTextGold = howManyTokens < 1 ? "MUST MINT ATLEAST 1 GOLD PENDANT" : oneTextGold;
+    const buttonTextGold = signedIn ? zeroTextGold : "CONNECT WALLET TO MINT"
+
+    const paraText = signedIn ? "INPUT NUMBER OF PENDANTS TO MINT (0.06 ETH): " : "CONNECT WALLET ABOVE TO MINT PENDANTS!"
 
     return (
         <div id="#home">
             <div className="minthomeBg" />
-            <div className="minthome__container">
-                <div className="minthome__info">
-                    <h1>MINT A BIT BOT!</h1>
-                    <div className="minthome__signIn"> 
-                        {!signedIn ? <button onClick={signIn}>CONNECT WALLET</button>
-                            : <button onClick={signOut}>WALLET CONNECTED<br /> CLICK TO SIGN OUT</button>
-                        }
-                    </div>
-                    
-                    <p>BIT BOTS MINTED: {totalSupply} / 9,999</p>
-                    <p>{paraText}</p>
-                    
-                    <div className={signedIn ? "minthome__signIn-input" : "minthome__signIn-input-false"}>
-                        <input 
-                            type="number" 
-                            min="1"
-                            max="20"
-                            value={howManyTokens}
-                            onChange={ e => checkHowMany(e.target.value) }
-                            name="" 
-                        />
-                    </div>
-                    
-                    <br/>
-                    
-                    <div className={signedIn && howManyTokens > 0 ? "minthome__mint" : "minthome__mint-false"}>
-                        {howManyTokens > 0 ? <button onClick={() => mint()}>{buttonText}</button>
-                            : <button>{buttonText}</button>
-                        }
+            <div className="minthome__wrapper">
+                <div className="minthome__container">
+                    <div className="minthome__info">
+                        <h1>CATHARSIS X THE FOXXIES</h1>
+                        <h2>MINT A PENDANT HERE PENDANT (.06 ETH)</h2>
+                        <div className="minthome__signIn"> 
+                            {!signedIn ? <button onClick={signIn}>CONNECT WALLET</button>
+                                : <button onClick={signOut}>WALLET CONNECTED<br /> CLICK TO SIGN OUT</button>
+                            }
+                        </div>
+                        
+                        <p>{paraText}</p>
+                        
+                        <div className={signedIn ? "minthome__signIn-input" : "minthome__signIn-input-false"}>
+                            <input 
+                                type="number" 
+                                min="1"
+                                max="20"
+                                value={howManyTokens}
+                                onChange={ e => checkHowMany(e.target.value) }
+                                name="" 
+                            />
+                        </div>
+                        
+                        <br/>
+                        
+                        <div className={signedIn && howManyTokens > 0 ? "minthome__mint" : "minthome__mint-false"}>
+                            {howManyTokens > 0 ? <button onClick={() => mint()}>{buttonTextSilver}</button>
+                                : <button>{buttonTextSilver}</button>
+                            }
+                        </div>
                     </div>
                 </div>
             </div>

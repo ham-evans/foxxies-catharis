@@ -2,9 +2,9 @@ import React, { Component } from 'react';
 import { HashLink } from "react-router-hash-link";
 import { Link } from "react-router-dom";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faDiscord, faTwitter } from '@fortawesome/free-brands-svg-icons'
+import { faDiscord, faTwitter, faInstagram } from '@fortawesome/free-brands-svg-icons'
 import { faTimes, faBars } from '@fortawesome/free-solid-svg-icons'
-import logo from '../images/logo.png'
+import logo from '../foxxiesImages/logoWhite.png'
 
 import "./Navbar.css";
 
@@ -27,42 +27,31 @@ export default class Navbar extends Component {
 
           <ul className={this.state.isOpen ? "nav-menu active" : "nav-menu"}>
             <li className="nav-item">
-              <HashLink
-                smooth
-                to="#project"
-                className="nav-links"
-              >
-                ABOUT
-              </HashLink>
-            </li>
-            <li className="nav-item">
-              <HashLink
-                smooth
-                to="#roadmap"
-                className="nav-links"
-              >
-                VISION
-              </HashLink>
-            </li>
-            <li className="nav-item">
-              <HashLink
-                smooth 
-                to="#team"
-                className="nav-links"
-              >
-                FOUNDERS
-              </HashLink>
-            </li>
-            <li className="nav-item">
-              <Link className="nav-links" to={{ pathname: "https://twitter.com/BitBotSociety" }} target="_blank" >
-                <FontAwesomeIcon icon={faTwitter} />
+              <Link className="nav-links" to={{ pathname: "https://www.catharsisdesign.com/foxxies" }} target="_blank" >
+                Back to Main Site
               </Link>
             </li>
             <li className="nav-item">
-              <Link className="nav-links" to={{ pathname: "https://discord.com/invite/kG24rk4cMD" }} target="_blank" >
-                <FontAwesomeIcon icon={faDiscord} />
+              <Link className="nav-links" to={{ pathname: "https://discord.com/invite/UbmwkynKbW" }} target="_blank" >
+                <FontAwesomeIcon className="fontAwesome" icon={faDiscord} />
               </Link>
             </li>
+            <li className="nav-item">
+              <Link className="nav-links" to={{ pathname: "https://twitter.com/catharsisnft" }} target="_blank" >
+                <FontAwesomeIcon className="fontAwesome" icon={faTwitter} />
+              </Link>
+            </li>
+            
+            <li className="nav-item">
+              <Link className="nav-links" to={{ pathname: "https://www.instagram.com/catharsisdesigns/" }} target="_blank" >
+                <FontAwesomeIcon className="fontAwesome" icon={faInstagram} />
+              </Link>
+            </li>
+            <button>
+              <Link className="nav-links" to={{ pathname: "https://opensea.io/collection/catharsis01" }} target="_blank" >
+                BUY ON OPENSEA
+              </Link>
+            </button>
           </ul>
           <div className="nav-icon" onClick={this.handleToggle}>
             {this.state.isOpen ? <FontAwesomeIcon icon={faTimes} />

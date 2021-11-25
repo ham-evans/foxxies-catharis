@@ -1,8 +1,11 @@
 body {
   margin: 0;
-  font-family: 'Share Tech Mono', monospace;
+  font-family: 'Source Sans Pro', sans-serif;
+  letter-spacing: 2px;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  background-color: black;
+
 }
 
 .button { 

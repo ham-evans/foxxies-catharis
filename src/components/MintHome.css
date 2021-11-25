@@ -14,7 +14,7 @@
 }
 
 .minthomeBg { 
-    height: 94vh;
+    height: 100vh;
     width: auto;
     margin: 0;
     background-position: center;
@@ -22,18 +22,18 @@
     background-size: cover;
     object-fit: contain;
     position: relative;
-    background-image: url("../images/bgBitbot2.jpeg");
+    background-image: url("../foxxiesImages/background.jpeg");
+    filter: blur(4px);
     pointer-events: none;
 }
 
 .minthome__container { 
-    background-color: rgba(52,59,65,.95);
+    background-image: url("../foxxiesImages/background.jpeg");
     position: absolute;
-    right: 20vw;
+    right: 15vw;
     top: 17vh;
-    width: 60vw;
-    height: 50vh;
-    border-radius: 20px;
+    width: 70vw;
+    height: 70vh;
     align-items: center;
     justify-content: center;
     text-align: center;
@@ -41,7 +41,8 @@
     background-repeat: no-repeat;
     background-size: cover;
     color: #fff;
-    border: 3px solid #2add7a;;
+    font-family: 'Chathura', sans-serif;
+    letter-spacing: 2px;
 }
 
 .minthome__info { 
@@ -50,17 +51,29 @@
     top: 50%;
     -ms-transform: translateY(-50%);
     transform: translateY(-50%);
+    margin-right: 25vw;
 }
 
 .minthome__info h1 { 
     margin: 0;
-    margin-bottom: 10px;
+    font-size: 5rem;
+    margin-top: -4vh;
+    font-weight: 300;
+    letter-spacing: 2px;
+}
+
+.minthome__info h2 { 
+    margin: 0;
+    font-size: 2.5rem;
+    margin-top: -4vh;
+    font-weight: 300;
+    letter-spacing: 2px;
 }
 
 .minthome__info p { 
-    font-size: 1.3rem;
-    font-weight: bold;
-    margin-top: 0;
+    font-size: 2rem;
+    font-weight: 300;
+    margin: 0;
 }
 
 .minthome__signIn button { 
@@ -70,17 +83,15 @@
     width: 400px;
     border: none;
     outline: none;
-    border-radius: 15px;
     font-style: 1.5rem;
     margin-top: 10px;
-    margin-bottom: 30px;
+    margin-bottom: 10px;
     transition: all 0.35s;
-    background:#000;
+    background:#171717;
     color: #fff;
-    border: 2px solid #2add7a;
-    font-size: 1.2rem;
-    font-family: 'Share Tech Mono', monospace;
-
+    font-size: 2rem;
+    font-family: 'Chathura', sans-serif;
+    letter-spacing: 2px;
 }
 
 .minthome__signIn-false button {
@@ -93,49 +104,47 @@
     border-radius: 15px;
     font-style: 1.5rem;
     margin-top: 10px;
-    margin-bottom: 30px;
+    margin-bottom: 10px;
     transition: all 0.35s;
-    font-size: 1.2rem;
-    background:#000;
+    font-size: 2rem;
+    background:#171717;
     color: #fff;
-    border: 2px solid #2add7a;
-    font-family: 'Share Tech Mono', monospace;
+    font-family: 'Chathura', sans-serif;
+    letter-spacing: 2px;
 
 }
 
 .minthome__signIn button:hover {
-    transform: scale(1.1);
+    background: rgba(23, 23, 23, .8);
     cursor: pointer; 
 }
 
 .minthome__signIn-input input { 
-    width: 35%;
-    background:#000;
+    width: 15%;
+    background:#171717;
     color: #fff;
-    border: 2px solid #2add7a;
-    border-radius: 10px;
     text-align: center;
-    padding-top: 9px;
-    padding-bottom: 9px;
+    padding-top: 3px;
+    padding-bottom: 3px;
     outline-width: 0;
-    font-size: 1.2rem;
-    font-family: 'Share Tech Mono', monospace;
+    font-size: 1.8rem;
+    font-family: 'Chathura', sans-serif;
+    letter-spacing: 2px;
 
 }
 
 .minthome__signIn-input-false input { 
     cursor: default;
-    width: 35%;
-    background:#000;
+    width: 15%;
+    background:#171717;
     color: #fff;
-    border: 2px solid #FF6347;
-    border-radius: 10px;
     text-align: center;
-    padding-top: 9px;
-    padding-bottom: 9px;
+    padding-top: 3px;
+    padding-bottom: 3px;
     outline-width: 0;
-    font-size: 1.2rem;
-    font-family: 'Share Tech Mono', monospace;
+    font-size: 1.8rem;
+    font-family: 'Chathura', sans-serif;
+    letter-spacing: 2px;
 }
 
 .minthome__mint button { 
@@ -144,20 +153,19 @@
     width: 400px;
     border: none;
     outline: none;
-    border-radius: 15px;
     font-style: 1.5rem;
     margin-top: 10px;
     margin-bottom: 10px;
     transition: all 0.35s;
-    background:#000;
+    background:#171717;
     color: #fff;
-    border: 2px solid #2add7a;
-    font-size: 1.3rem;
-    font-family: 'Share Tech Mono', monospace;
+    font-size: 2rem;
+    letter-spacing: 2px;
+    font-family: 'Chathura', sans-serif;
 }
 
 .minthome__mint button:hover {
-    transform: scale(1.1);
+    background: rgba(23, 23, 23, .8);
     cursor: pointer; 
 }
 
@@ -166,24 +174,18 @@
     height: 50px;
     width: 400px;
     outline: none;
-    border-radius: 15px;
     font-style: 1.5rem;
     margin-top: 10px;
     margin-bottom: 10px;
     transition: all 0.35s;
-    font-size: 1.1rem;
-    background:#000;
+    font-size: 2rem;
+    background:#171717;
     color: #fff;
-    border: 2px solid #FF6347;
-    font-family: 'Share Tech Mono', monospace;
-
+    letter-spacing: 2px;
+    font-family: 'Chathura', sans-serif;
 }
 
 @media screen and (max-width: 675px) {
-    .minthomeBg { 
-        background-image: url("../images/bgBitbot2.jpeg");
-    }
-
     .minthome__container {
         right: 5vw;
         top: 14vh;
@@ -191,15 +193,72 @@
         height: 70vh;
     }
 
+    .minthome__info { 
+        margin-right: 0;
+        overflow: visible;
+    }
+
+    .minthome__info h1 { 
+        font-size: 2.3rem;
+        letter-spacing: 1.7px;
+    }
+    
+    .minthome__info h2 { 
+        font-size: 1.5rem;
+        margin-top: -2vh;
+        letter-spacing: 1.7px;
+    }
+    
+    .minthome__info p { 
+        font-size: 1.7rem;
+        letter-spacing: 1.5px;
+        line-height: 20px;
+        margin: 10px auto;
+    }
+
     .minthome__signIn button {
         width: 80%;
+        height: 100%;
+        padding: 0px 10px;
+        font-size: 1.5rem;
+    }
+
+    .minthome__signIn-false button { 
+        width: 80%;
+        height: 100%;
+        padding: 0px 10px;
+        font-size: 1.5rem;
+    }
+
+    .minthome__signIn-input input { 
+        margin-top: 20px;
+        width: 25%;
+        font-size: 1.5rem;
+        letter-spacing: 1.7px;
+        border: none;
+    }
+    
+    .minthome__signIn-input-false input { 
+        margin-top: 20px;
+        width: 25%;
+        font-size: 1.5rem;
+        letter-spacing: 1.7px;
+        border: none;
     }
 
     .minthome__mint button { 
         width: 80%;
+        height: 100%;
+        padding: 0px 10px;
+        font-size: 1.4rem;
+        border: none;
     }
 
     .minthome__mint-false button {
         width: 80%;
+        height: 100%;
+        padding: 0px 10px;
+        font-size: 1.4rem;
+        border: none;
     }
 }

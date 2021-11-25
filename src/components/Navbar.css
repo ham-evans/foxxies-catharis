@@ -1,6 +1,6 @@
   .navbar {
-    background-color: rgba(52,59,65,.7);
-    height: 70px;
+    background-color: transparent;
+    height: 100px;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -14,7 +14,7 @@
   }
 
   .nav__imgLogo { 
-    height: 50px;
+    height: 70px;
     width: auto;
     align-items: center;
     cursor: pointer;
@@ -55,7 +55,7 @@
     display: flex;
     list-style: none;
     text-align: center;
-    padding-right: 25px;
+    padding-right: 65px;
     overflow-x: hidden;
   }
   
@@ -65,6 +65,20 @@
     padding: 0.5rem 0.5rem;
     height: 100%;
   }
+
+  .nav-container button { 
+    color: #fff;
+    background-color: #171717;
+    border: none;
+    padding-right: 10px;
+    padding-left: 10px;
+  }
+
+  .nav-container button:hover { 
+    background: rgba(23, 23, 23, .8);
+    cursor: pointer; 
+  }
+
   .fa-code {
     margin-left: 1rem;
   }
@@ -76,18 +90,19 @@
     transition: all 0.35s;
   }
 
-  .nav-item:hover { 
-    transform: scale(1.2);
-  }
-  
   .nav-item a { 
-      color: #fff
+      color: #fff;
+      font-size: 1.2rem;
   }
   
   .nav-icon {
     display: none;
   }
-  
+
+  .fontAwesome { 
+    font-size: 1.5rem;
+  }
+
   @media screen and (max-width: 960px) {
     .navbar { 
       padding-top: 10px;
@@ -139,7 +154,7 @@
     }
 
     .nav-item a { 
-      color: #2add7a;
+      color: #fff;
     }
 
     .nav-links {
