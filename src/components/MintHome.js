@@ -189,9 +189,9 @@ export default function MintHome () {
         setIsActive(isActive);
         setHoldings(holdings);
 
-        setMaxMintGold(Math.min(holdings[0].balance, holdings[1].balance));
-        setMaxMintSilver(holdings[0].balance + holdings[1].balance);
-        setHowManyTokens(holdings[0].balance + holdings[1].balance);
+        setMaxMintGold(Math.min(parseInt(holdings[0].balance, 10), parseInt(holdings[1].balance, 10)));
+        setMaxMintSilver(parseInt(holdings[0].balance + holdings[1].balance, 10));
+        setHowManyTokens(parseInt(holdings[0].balance + holdings[1].balance, 10));
     }
 
     async function mint (tokenType) { 
