@@ -20,7 +20,7 @@ const mainnetConfig = {
 */
 
 const rinkebyConfig = {
-    'CONTRACT': '0xF261cbb26428B8c1DE64fb729c60E0C5c31D8748',
+    'CONTRACT': '0xA13F4f9f978f2e7B14161f4C3b9eEAFA32064aCa',
     'CHAIN_ID':  4,
     'RPC_URL':   process.env.INFURA_API_RINKEBY_KEY,
     'ABI':       ContractAbi
@@ -51,12 +51,12 @@ export default function MintHome () {
     const [contract, setContract] = useState(null);
     const [contractWithSigner, setContractWithSigner] = useState(null);
     const [tokenPrice, setTokenPrice] = useState(0);
-    const [howManyTokens, setHowManyTokens] = useState(0)
+    const [howManyTokensSilver, setHowManyTokensSilver] = useState(0)
+    const [howManyTokensGold, setHowManyTokensGold] = useState(0)
     const [isActive, setIsActive] = useState(false);
     const [holdings, setHoldings] = useState(null);
     const [maxMintSilver, setMaxMintSilver] = useState(0);
     const [maxMintGold, setMaxMintGold] = useState(0);
-    const [color, setColor] = useState("SILVER")
 
     const [modalShown, toggleModal] = useState(false);
     const [errorMessage, setErrorMessage] = useState("");
@@ -189,12 +189,13 @@ export default function MintHome () {
         setIsActive(isActive);
         setHoldings(holdings);
 
-        setMaxMintGold(Math.min(parseInt(holdings[0].balance, 10), parseInt(holdings[1].balance, 10)));
-        setMaxMintSilver(parseInt(holdings[0].balance + holdings[1].balance, 10));
-        setHowManyTokens(parseInt(holdings[0].balance + holdings[1].balance, 10));
+        setMaxMintGold(Math.min(parseInt(holdings[0].balance), parseInt(holdings[1].balance)));
+        setMaxMintSilver(parseInt(holdings[0].balance) + parseInt(holdings[1].balance));
+        setHowManyTokensGold(Math.min(parseInt(holdings[0].balance), parseInt(holdings[1].balance)));
+        setHowManyTokensSilver(parseInt(holdings[0].balance) + parseInt(holdings[1].balance));
     }
 
-    async function mint (tokenType) { 
+    async function mint () { 
         if (!signedIn || !contractWithSigner){
             setErrorMessage("Please connect wallet or reload the page!")
             toggleModal(true);
@@ -226,20 +227,20 @@ export default function MintHome () {
 
         //connected
         try{
-            const price = String(tokenPrice * howManyTokens)
+            const price = String(tokenPrice * (parseInt(howManyTokensSilver) + parseInt(howManyTokensGold)));
 
             const overrides = {
                 from: walletAddress,
                 value: price
             }
 
-            const gasBN = await ethereumSession.contract.estimateGas.mint(walletAddress, howManyTokens, overrides);
+            const gasBN = await ethereumSession.contract.estimateGas.mint([howManyTokensGold, howManyTokensSilver], overrides);
             const finalGasBN = gasBN.mul( ethers.BigNumber.from(11) ).div( ethers.BigNumber.from(10) );
             overrides.gasLimit = finalGasBN.toString();
 
-            const txn = await contractWithSigner.mint(walletAddress, howManyTokens, overrides)
+            const txn = await contractWithSigner.mint([howManyTokensGold, howManyTokensSilver], overrides)
             await txn.wait();
-            setMintingSuccess(howManyTokens)
+            setMintingSuccess(howManyTokensSilver + howManyTokensGold)
         } catch (error) {
             if (error.error) {
                 setMintingError(error.error.message)
@@ -247,8 +248,8 @@ export default function MintHome () {
         }
     }
 
-    const setMintingSuccess = (howManyTokens) => {
-        setErrorMessage("Congrats on minting " + howManyTokens + "  Bit Bots!!");
+    const setMintingSuccess = (howManyTokensSilver, howManyTokensGold) => {
+        setErrorMessage("Congrats on minting " + (howManyTokensSilver + howManyTokensGold) + "  Bit Bots!!");
         toggleModal(true);
     }
 
@@ -257,46 +258,36 @@ export default function MintHome () {
         toggleModal(true);
     }
 
-    function checkHowMany (newNumber) { 
-        if (color === "GOLD") { 
-            if (newNumber > maxMintGold) {
-                setHowManyTokens(maxMintGold)
-            } else if (newNumber < 0) { 
-                setHowManyTokens("")
-            } else { 
-                setHowManyTokens(newNumber) 
-            }
-        } else if (color === "SILVER"){ 
-            if (newNumber > maxMintSilver) {
-                setHowManyTokens(maxMintSilver)
-            } else if (newNumber < 0) { 
-                setHowManyTokens("")
-            } else { 
-                setHowManyTokens(newNumber) 
-            }
+    function checkHowManySilver (newNumber) { 
+        if (newNumber > maxMintSilver) {
+            setHowManyTokensSilver(maxMintSilver)
+        } else if (newNumber < 0) { 
+            setHowManyTokensSilver("")
+        } else { 
+            setHowManyTokensSilver(newNumber) 
         }
-        
     }
 
-    function onChangeValue (event) {
-        setColor(event.target.value);
+    function checkHowManyGold (newNumber) { 
+        if (newNumber > maxMintGold) {
+            setHowManyTokensGold(maxMintGold)
+        } else if (newNumber < 0) { 
+            setHowManyTokensGold("")
+        } else { 
+            setHowManyTokensGold(newNumber) 
+        }
     }
 
-    const oneTextSilver = howManyTokens < 2 && howManyTokens > 0 ? "MINT " + howManyTokens + " SILVER PENDANTS!" : "MINT " + howManyTokens + " SILVER PENDANTS!";
-    const zeroTextSilver = howManyTokens < 1 ? "MUST MINT ATLEAST 1 SILVER PENDANT" : oneTextSilver;
-    const noSilver = maxMintSilver > 0 ? zeroTextSilver : "NOT ELIGIBLE TO MINT SILVER PENDANT";
-    const buttonTextSilver = signedIn ?  noSilver: "CONNECT WALLET TO MINT";
+    const howManyTokens = parseInt(howManyTokensSilver) + parseInt(howManyTokensGold);
 
+    const oneText = howManyTokens < 2 && howManyTokens > 0 ? "MINT " + howManyTokens + " PENDANTS!" : "MINT " + howManyTokens + " PENDANTS!";
+    const zeroText = howManyTokensGold === "" ? "MUST MINT ATLEAST 1 PENDANT" : oneText;
+    const nextText = howManyTokensSilver === "" ? "MUST MINT ATLEAST 1 PENDANT" : zeroText;
+    const finalText = howManyTokens < 1 ? "MUST MINT ATLEAST 1 PENDANT" : nextText;
 
-    const oneTextGold = howManyTokens < 2 && howManyTokens > 0 ? "MINT " + howManyTokens + " GOLD PENDANTS!" : "MINT " + howManyTokens + " GOLD PENDANTS!";
-    const zeroTextGold = howManyTokens < 1 ? "MUST MINT ATLEAST 1 GOLD PENDANT" : oneTextGold;
-    const noGold = maxMintGold > 0 ? zeroTextGold : "NOT ELIGIBLE TO MINT GOLD PENDANT";
-    const buttonTextGold = signedIn ?  noGold : "CONNECT WALLET TO MINT"
+    const buttonText = signedIn ?  finalText : "CONNECT WALLET TO MINT"
 
-    const buttonText = color === "GOLD" ? buttonTextGold : buttonTextSilver;
-
-    const paraTextSilver = signedIn ? "INPUT NUMBER OF SILVER PENDANTS TO MINT (0.06 ETH): " : "CONNECT WALLET ABOVE TO MINT PENDANTS!"
-    const paraTextGold = signedIn ? "INPUT NUMBER OF GOLD PENDANTS TO MINT (0.06 ETH): " : "CONNECT WALLET ABOVE TO MINT PENDANTS!"
+    const paraText = signedIn ? "INPUT NUMBER OF PENDANTS TO MINT (0.06 ETH): " : "CONNECT WALLET ABOVE TO MINT PENDANTS!"
 
     return (
         <div id="#home">
@@ -305,51 +296,44 @@ export default function MintHome () {
                 <div className="minthome__container">
                     <div className="minthome__info">
                         <h1>CATHARSIS X THE FOXXIES</h1>
-                        <h2>MINT A PENDANT HERE PENDANT (.06 ETH)</h2>
+                        <h2>MINT A PENDANT HERE (.06 ETH)</h2>
                         <div className="minthome__signIn"> 
                             {!signedIn ? <button onClick={signIn}>CONNECT WALLET</button>
-                                : <button onClick={signOut}>WALLET CONNECTED<br /> CLICK TO SIGN OUT</button>
+                                : <button onClick={signOut}>WALLET CONNECTED</button>
                             }
                         </div>
 
-                        <div onChange={onChangeValue} className="form">
-                            <label class="form-control">
+                        <p>{paraText}</p>
+                        
+                        <div className="minthome__inputs">
+                            <div className="minthome__signIn-inputSilver">
                                 <input 
-                                    type="radio" 
-                                    name="radio" 
-                                    value="SILVER"
-                                    checked={color === 'SILVER'}
+                                    type="number" 
+                                    min="1"
+                                    max={maxMintSilver}
+                                    value={howManyTokensSilver}
+                                    onChange={ e => checkHowManySilver(e.target.value) }
+                                    name="" 
                                 />
-                                SILVER
-                            </label>
+                                <p>SILVER PENDANTS</p>
+                            </div>
 
-                            <label class="form-control">
+                            <div className="minthome__signIn-inputGold">
                                 <input 
-                                    type="radio" 
-                                    name="radio" 
-                                    value="GOLD"
-                                    checked={color=== 'GOLD'}
+                                    type="number" 
+                                    min="1"
+                                    max={maxMintGold}
+                                    value={howManyTokensGold}
+                                    onChange={ e => checkHowManyGold(e.target.value) }
+                                    name="" 
                                 />
-                                GOLD
-                            </label>
-                        </div>
-                        
-                        <p>{color === "GOLD" ? paraTextGold : paraTextSilver}</p>
-                        
-                        <div className={signedIn ? "minthome__signIn-input" : "minthome__signIn-input-false"}>
-                            <input 
-                                type="number" 
-                                min="1"
-                                max={color === "GOLD" ? maxMintGold : maxMintSilver}
-                                value={howManyTokens}
-                                onChange={ e => checkHowMany(e.target.value) }
-                                name="" 
-                            />
+                                <p>GOLD PENDANTS</p>
+                            </div>
                         </div>
                         
                         <br/>
                         
-                        <div className={color === "GOLD" ? "minthome__mintGold" : "minthome__mintSilver"}>
+                        <div className="minthome__mint">
                             {howManyTokens > 0 ? <button onClick={() => mint()}>{buttonText}</button>
                                 : <button>{buttonText}</button>
                             }

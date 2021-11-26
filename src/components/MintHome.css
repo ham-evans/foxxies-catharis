@@ -79,7 +79,7 @@
 .minthome__signIn button { 
     cursor:pointer;
     padding: 10px 20px;
-    height: 70px;
+    height: 75px;
     width: 400px;
     border: none;
     outline: none;
@@ -97,7 +97,7 @@
 .minthome__signIn-false button {
     cursor:default;
     padding: 10px 20px;
-    height: 70px;
+    height: 75px;
     width: 400px;
     border: none;
     outline: none;
@@ -119,10 +119,49 @@
     cursor: pointer; 
 }
 
-.minthome__signIn-input input { 
-    width: 15%;
-    background:#171717;
+.minthome__mint button:hover {
+    background: #1717179d;
+    cursor: pointer; 
+}
+
+
+.minthome__mint button { 
+    padding: 0px 20px;
+    height: 50px;
+    width: 430px;
+    border: none;
+    outline: none;
+    font-style: 1.5rem;
+    margin-bottom: 10px;
+    transition: all 0.35s;
+    background: #171717;
     color: #fff;
+    font-size: 2rem;
+    letter-spacing: 2px;
+    font-family: 'Chathura', sans-serif;
+}
+
+.minthome__inputs { 
+    display: flex;
+    flex-direction: row;
+    width: 40vw;
+    margin: auto;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+}
+
+.minthome__signIn-inputSilver { 
+    margin-right: 20px;
+}
+.minthome__signIn-inputGold { 
+    margin-left: 20px;
+}
+
+.minthome__signIn-inputSilver input { 
+    width: 100px;
+    background:#cccfcfb6;
+    color: #000;
     text-align: center;
     padding-top: 3px;
     padding-bottom: 3px;
@@ -130,14 +169,14 @@
     font-size: 1.8rem;
     font-family: 'Chathura', sans-serif;
     letter-spacing: 2px;
-
+    border: none;
+    padding-left: 10px;
 }
 
-.minthome__signIn-input-false input { 
-    cursor: default;
-    width: 15%;
-    background:#171717;
-    color: #fff;
+.minthome__signIn-inputGold input { 
+    width: 100px;
+    background:#f4c330b9;
+    color: #000;
     text-align: center;
     padding-top: 3px;
     padding-bottom: 3px;
@@ -145,78 +184,11 @@
     font-size: 1.8rem;
     font-family: 'Chathura', sans-serif;
     letter-spacing: 2px;
-}
-
-.minthome__mintGold button { 
-    padding: 0px 20px;
-    height: 50px;
-    width: 430px;
     border: none;
-    outline: none;
-    font-style: 1.5rem;
-    margin-top: 10px;
-    margin-bottom: 10px;
-    transition: all 0.35s;
-    background: #f4c430;
-    color: #000;
-    font-size: 2rem;
-    letter-spacing: 2px;
-    font-family: 'Chathura', sans-serif;
-}
-
-.minthome__mintGold button:hover {
-    background: #f4c3309a;
-    cursor: pointer; 
-}
-
-.minthome__mintSilver button:hover {
-    background: #cccfcf9d;
-    cursor: pointer; 
+    padding-left: 10px;
 }
 
 
-.minthome__mintSilver button { 
-    padding: 0px 20px;
-    height: 50px;
-    width: 430px;
-    border: none;
-    outline: none;
-    font-style: 1.5rem;
-    margin-top: 10px;
-    margin-bottom: 10px;
-    transition: all 0.35s;
-    background: #cccfcf;
-    color: #000;
-    font-size: 2rem;
-    letter-spacing: 2px;
-    font-family: 'Chathura', sans-serif;
-}
-
-.form-control {
-  font-size: 2rem;
-  line-height: 1.1;
-}
-
-.form-control input:hover {
-    cursor: pointer;
-}
-
-.form { 
-    height: 100%;
-}
-
-.form-control input {
-    margin-right: 10px;
-    margin-left: 10px;
-}
-
-.form-control input:last-child { 
-    margin-left: 30px;
-}
-
-input[type='radio'] { 
-    transform: scale(2); 
-}
 
 @media screen and (max-width: 675px) {
     .minthome__container {
