@@ -3,12 +3,13 @@ import { useWeb3React } from '@web3-react/core';
 import { WalletConnectConnector } from "@web3-react/walletconnect-connector";
 import { WalletLinkConnector }    from "@web3-react/walletlink-connector";
 
-import ContractAbi from '../artifacts/contracts/Bitbot.json';
+import ContractAbi from '../artifacts/contracts/FXC.json';
 import Modal from './Modal.js';
 import "./MintHome.css";
 
 import { ethers } from 'ethers';
 import EthereumSession from '../lib/eth-session.js';
+
 /*
 const mainnetConfig = {
     'CONTRACT': '0x68cf439BA5D2897524091Ef81Cb0A3D1F56E5500',
@@ -19,10 +20,10 @@ const mainnetConfig = {
 */
 
 const rinkebyConfig = {
-    'CONTRACT': '0x91F9EA5939Cc707357808481b1B90ddaDa81bf33',
+    'CONTRACT': '0xF261cbb26428B8c1DE64fb729c60E0C5c31D8748',
     'CHAIN_ID':  4,
     'RPC_URL':   process.env.INFURA_API_RINKEBY_KEY,
-    'ABI':       ContractAbi.abi
+    'ABI':       ContractAbi
 }
 
 
@@ -32,7 +33,7 @@ const CONNECTORS = {};
 CONNECTORS.Walletlink = new WalletLinkConnector({
     url: config.RPC_URL,
     appLogoUrl: null,
-    appName: "Bit Bot Society",
+    appName: "Foxxies X Catharsis",
 });
 
 CONNECTORS.WalletConnect = new WalletConnectConnector({
@@ -50,9 +51,12 @@ export default function MintHome () {
     const [contract, setContract] = useState(null);
     const [contractWithSigner, setContractWithSigner] = useState(null);
     const [tokenPrice, setTokenPrice] = useState(0);
-    const [howManyTokens, setHowManyTokens] = useState(20)
-    const [totalSupply, setTotalSupply] = useState(0);
-    const [paused, setPaused] = useState(true);
+    const [howManyTokens, setHowManyTokens] = useState(0)
+    const [isActive, setIsActive] = useState(false);
+    const [holdings, setHoldings] = useState(null);
+    const [maxMintSilver, setMaxMintSilver] = useState(0);
+    const [maxMintGold, setMaxMintGold] = useState(0);
+    const [color, setColor] = useState("SILVER")
 
     const [modalShown, toggleModal] = useState(false);
     const [errorMessage, setErrorMessage] = useState("");
@@ -74,7 +78,7 @@ export default function MintHome () {
     useEffect(() => { 
         if( window.ethereum ){
             ethereumSession.connectEthers()
-                .then(() => loadContractData())
+                .then(() => loadContractData(ethereumSession.wallet.accounts[0]))
                 .then(() => {
                     if( ethereumSession.hasAccounts() )
                         setWalletAddress( ethereumSession.wallet.accounts[0] );
@@ -153,12 +157,12 @@ export default function MintHome () {
 
             if (ethereumSession.hasAccounts()) {
                 setWalletAddress(ethereumSession.wallet.accounts[0])
-                await loadContractData()
+                await loadContractData(ethereumSession.wallet.accounts[0])
             }
         }
         catch( error ){
             if (error.code === 4001) {
-                setErrorMessage("Sign in to mint Bit Bots!")
+                setErrorMessage("Sign in to mint pendants!")
                 toggleModal(true);
             } else { 
                 setErrorMessage(error)
@@ -171,29 +175,33 @@ export default function MintHome () {
         setWalletAddress(null)
     }
 
-    async function loadContractData () {
+    async function loadContractData (wallet) {
         const contract = ethereumSession.contract;
         const signer = ethereumSession.ethersProvider.getSigner();
         const contractWithSigner = contract.connect(signer)
-        const totalSupply = await contract.totalSupply();
-        const tokenPrice = await contract.cost();
-        const paused = await contract.paused();
+        const tokenPrice = await contract.PRICE();
+        const isActive = await contract.isActive();
+        const holdings = await contract.checkHoldings(wallet);
 
         setContract(contract);
         setContractWithSigner(contractWithSigner);
         setTokenPrice(tokenPrice);
-        setTotalSupply(totalSupply.toNumber())
-        setPaused(paused);
+        setIsActive(isActive);
+        setHoldings(holdings);
+
+        setMaxMintGold(Math.min(holdings[0].balance, holdings[1].balance));
+        setMaxMintSilver(holdings[0].balance + holdings[1].balance);
+        setHowManyTokens(holdings[0].balance + holdings[1].balance);
     }
 
-    async function mint () { 
+    async function mint (tokenType) { 
         if (!signedIn || !contractWithSigner){
             setErrorMessage("Please connect wallet or reload the page!")
             toggleModal(true);
             return
         }
 
-        if( paused ){
+        if( !isActive ){
             setErrorMessage("Sale is not active right now.  Try again later!")
             toggleModal(true);
             return;
@@ -249,30 +257,46 @@ export default function MintHome () {
         toggleModal(true);
     }
 
-    const mintOne = () => { 
-        setErrorMessage("Must mint atleast one Bit Bot!")
-        toggleModal(true);
+    function checkHowMany (newNumber) { 
+        if (color === "GOLD") { 
+            if (newNumber > maxMintGold) {
+                setHowManyTokens(maxMintGold)
+            } else if (newNumber < 0) { 
+                setHowManyTokens("")
+            } else { 
+                setHowManyTokens(newNumber) 
+            }
+        } else if (color === "SILVER"){ 
+            if (newNumber > maxMintSilver) {
+                setHowManyTokens(maxMintSilver)
+            } else if (newNumber < 0) { 
+                setHowManyTokens("")
+            } else { 
+                setHowManyTokens(newNumber) 
+            }
+        }
+        
     }
 
-    function checkHowMany (newNumber) { 
-        if (newNumber > 20) {
-            setHowManyTokens(20)
-        } else if (newNumber < 1) { 
-            setHowManyTokens("")
-        } else { 
-            setHowManyTokens(newNumber) 
-        }
+    function onChangeValue (event) {
+        setColor(event.target.value);
     }
 
     const oneTextSilver = howManyTokens < 2 && howManyTokens > 0 ? "MINT " + howManyTokens + " SILVER PENDANTS!" : "MINT " + howManyTokens + " SILVER PENDANTS!";
     const zeroTextSilver = howManyTokens < 1 ? "MUST MINT ATLEAST 1 SILVER PENDANT" : oneTextSilver;
-    const buttonTextSilver = signedIn ? zeroTextSilver : "CONNECT WALLET TO MINT"
+    const noSilver = maxMintSilver > 0 ? zeroTextSilver : "NOT ELIGIBLE TO MINT SILVER PENDANT";
+    const buttonTextSilver = signedIn ?  noSilver: "CONNECT WALLET TO MINT";
+
 
     const oneTextGold = howManyTokens < 2 && howManyTokens > 0 ? "MINT " + howManyTokens + " GOLD PENDANTS!" : "MINT " + howManyTokens + " GOLD PENDANTS!";
     const zeroTextGold = howManyTokens < 1 ? "MUST MINT ATLEAST 1 GOLD PENDANT" : oneTextGold;
-    const buttonTextGold = signedIn ? zeroTextGold : "CONNECT WALLET TO MINT"
+    const noGold = maxMintGold > 0 ? zeroTextGold : "NOT ELIGIBLE TO MINT GOLD PENDANT";
+    const buttonTextGold = signedIn ?  noGold : "CONNECT WALLET TO MINT"
 
-    const paraText = signedIn ? "INPUT NUMBER OF PENDANTS TO MINT (0.06 ETH): " : "CONNECT WALLET ABOVE TO MINT PENDANTS!"
+    const buttonText = color === "GOLD" ? buttonTextGold : buttonTextSilver;
+
+    const paraTextSilver = signedIn ? "INPUT NUMBER OF SILVER PENDANTS TO MINT (0.06 ETH): " : "CONNECT WALLET ABOVE TO MINT PENDANTS!"
+    const paraTextGold = signedIn ? "INPUT NUMBER OF GOLD PENDANTS TO MINT (0.06 ETH): " : "CONNECT WALLET ABOVE TO MINT PENDANTS!"
 
     return (
         <div id="#home">
@@ -287,14 +311,36 @@ export default function MintHome () {
                                 : <button onClick={signOut}>WALLET CONNECTED<br /> CLICK TO SIGN OUT</button>
                             }
                         </div>
+
+                        <div onChange={onChangeValue} className="form">
+                            <label class="form-control">
+                                <input 
+                                    type="radio" 
+                                    name="radio" 
+                                    value="SILVER"
+                                    checked={color === 'SILVER'}
+                                />
+                                SILVER
+                            </label>
+
+                            <label class="form-control">
+                                <input 
+                                    type="radio" 
+                                    name="radio" 
+                                    value="GOLD"
+                                    checked={color=== 'GOLD'}
+                                />
+                                GOLD
+                            </label>
+                        </div>
                         
-                        <p>{paraText}</p>
+                        <p>{color === "GOLD" ? paraTextGold : paraTextSilver}</p>
                         
                         <div className={signedIn ? "minthome__signIn-input" : "minthome__signIn-input-false"}>
                             <input 
                                 type="number" 
                                 min="1"
-                                max="20"
+                                max={color === "GOLD" ? maxMintGold : maxMintSilver}
                                 value={howManyTokens}
                                 onChange={ e => checkHowMany(e.target.value) }
                                 name="" 
@@ -303,12 +349,12 @@ export default function MintHome () {
                         
                         <br/>
                         
-                        <div className={signedIn && howManyTokens > 0 ? "minthome__mint" : "minthome__mint-false"}>
-                            {howManyTokens > 0 ? <button onClick={() => mint()}>{buttonTextSilver}</button>
-                                : <button>{buttonTextSilver}</button>
+                        <div className={color === "GOLD" ? "minthome__mintGold" : "minthome__mintSilver"}>
+                            {howManyTokens > 0 ? <button onClick={() => mint()}>{buttonText}</button>
+                                : <button>{buttonText}</button>
                             }
                         </div>
-                    </div>
+                </div>
                 </div>
             </div>
 

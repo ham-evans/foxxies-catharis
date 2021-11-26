@@ -147,42 +147,75 @@
     letter-spacing: 2px;
 }
 
-.minthome__mint button { 
+.minthome__mintGold button { 
     padding: 0px 20px;
     height: 50px;
-    width: 400px;
+    width: 430px;
     border: none;
     outline: none;
     font-style: 1.5rem;
     margin-top: 10px;
     margin-bottom: 10px;
     transition: all 0.35s;
-    background:#171717;
-    color: #fff;
+    background: #f4c430;
+    color: #000;
     font-size: 2rem;
     letter-spacing: 2px;
     font-family: 'Chathura', sans-serif;
 }
 
-.minthome__mint button:hover {
-    background: rgba(23, 23, 23, .8);
+.minthome__mintGold button:hover {
+    background: #f4c3309a;
     cursor: pointer; 
 }
 
-.minthome__mint-false button { 
+.minthome__mintSilver button:hover {
+    background: #cccfcf9d;
+    cursor: pointer; 
+}
+
+
+.minthome__mintSilver button { 
     padding: 0px 20px;
     height: 50px;
-    width: 400px;
+    width: 430px;
+    border: none;
     outline: none;
     font-style: 1.5rem;
     margin-top: 10px;
     margin-bottom: 10px;
     transition: all 0.35s;
+    background: #cccfcf;
+    color: #000;
     font-size: 2rem;
-    background:#171717;
-    color: #fff;
     letter-spacing: 2px;
     font-family: 'Chathura', sans-serif;
+}
+
+.form-control {
+  font-size: 2rem;
+  line-height: 1.1;
+}
+
+.form-control input:hover {
+    cursor: pointer;
+}
+
+.form { 
+    height: 100%;
+}
+
+.form-control input {
+    margin-right: 10px;
+    margin-left: 10px;
+}
+
+.form-control input:last-child { 
+    margin-left: 30px;
+}
+
+input[type='radio'] { 
+    transform: scale(2); 
 }
 
 @media screen and (max-width: 675px) {
@@ -221,6 +254,7 @@
         height: 100%;
         padding: 0px 10px;
         font-size: 1.5rem;
+        border: none;
     }
 
     .minthome__signIn-false button { 
@@ -228,6 +262,7 @@
         height: 100%;
         padding: 0px 10px;
         font-size: 1.5rem;
+        border: none;
     }
 
     .minthome__signIn-input input { 
@@ -255,6 +290,14 @@
     }
 
     .minthome__mint-false button {
+        width: 80%;
+        height: 100%;
+        padding: 0px 10px;
+        font-size: 1.4rem;
+        border: none;
+    }
+
+    .minthome__mintGold button { 
         width: 80%;
         height: 100%;
         padding: 0px 10px;
