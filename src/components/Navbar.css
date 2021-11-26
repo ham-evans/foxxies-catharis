@@ -10,7 +10,7 @@
     position: absolute;
     width: 100vw;
     font-weight: 400;
-    overflow-x: visible;
+    overflow: visible;
   }
 
   .nav__imgLogo { 
@@ -86,7 +86,6 @@
   .nav-item {
     line-height: 40px;
     margin-right: 1rem;
-    overflow-y: hidden;
     transition: all 0.35s;
   }
 
@@ -151,6 +150,7 @@
     .nav-item { 
       padding-top: 20px;
       padding-bottom: 20px;
+      margin-right: 0;
     }
 
     .nav-item a { 
@@ -172,6 +172,10 @@
       cursor: pointer;
       color: #fff;
       margin-bottom: 50px;
+    }
+
+    .nav-container button {
+      background-color: #000;
     }
   }
   
