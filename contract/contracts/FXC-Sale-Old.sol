@@ -16,7 +16,7 @@ import './foxxies/token-types.sol';
 import "@openzeppelin/contracts/utils/Strings.sol";
 import "@openzeppelin/contracts/finance/PaymentSplitter.sol";
 
-contract FXCSale is Delegated, PaymentSplitter {
+contract FXCSaleOld is Delegated, PaymentSplitter {
   using Strings for uint;
 
   IFXC public tokenContract;

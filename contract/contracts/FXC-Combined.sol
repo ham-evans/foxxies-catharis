@@ -9,17 +9,15 @@ pragma solidity ^0.8.0;
  *           mints + transfers          *
  ****************************************/
 
-import './IFXC.sol';
+import './Blimpie/ERC721EnumerableB.sol';
 import './Blimpie/Delegated.sol';
 import './foxxies/genesis.sol';
 import './foxxies/token-types.sol';
 import "@openzeppelin/contracts/utils/Strings.sol";
 import "@openzeppelin/contracts/finance/PaymentSplitter.sol";
 
-contract FXCSale is Delegated, PaymentSplitter {
+contract FXCCombined is Delegated, ERC721EnumerableB, PaymentSplitter {
   using Strings for uint;
-
-  IFXC public tokenContract;
 
   struct ContractBalance {
     address addr;
@@ -40,20 +38,61 @@ contract FXCSale is Delegated, PaymentSplitter {
     0xB7edf3Cbb58ecb74BdE6298294c7AAb339F3cE4a
   ];
 
-  mapping (address => uint[2]) public balanceMap;
-
   uint[] private splits = [
     90,
     10
   ];
 
-  constructor(address[2] memory _contracts, IFXC _tokenContract) PaymentSplitter( payees, splits ) {
-        sourceContracts = _contracts;
-        tokenContract = _tokenContract;
+  string private _baseTokenURI = '';
+  string private _tokenURISuffix = '';
+
+  mapping(uint => TOKEN_TYPES) tokenTypeMap;
+
+  constructor(address[2] memory _contracts) ERC721B( "Foxxies X Catharsis", "FXC", 0 ) PaymentSplitter( payees, splits ) {
+    sourceContracts = _contracts;
+  }
+
+  //external
+  function burn(uint256 tokenId) external {
+    require(_msgSender() == ownerOf(tokenId), "only owner allowed to burn");
+    _burn(tokenId);
+  }
+
+  function getTokensByOwner(address owner) external view returns(uint256[] memory) {
+    return _walletOfOwner(owner);
+  }
+
+  function walletOfOwner(address owner) external view returns(uint256[] memory) {
+    return _walletOfOwner( owner );
   }
 
   //external payable
   fallback() external payable {}
+
+  //onlyDelegates
+  function setBaseURI(string calldata _newBaseURI, string calldata _newSuffix) external onlyDelegates {
+    _baseTokenURI = _newBaseURI;
+    _tokenURISuffix = _newSuffix;
+  }
+
+  //public
+  function tokenURI(uint tokenId) external view virtual override returns (string memory) {
+    require(_exists(tokenId), "ERC721Metadata: URI query for nonexistent token");
+
+    TOKEN_TYPES tokenType = tokenTypeMap[tokenId];
+
+    return string(abi.encodePacked(_baseTokenURI, tokenType, '/', tokenId.toString(), _tokenURISuffix));
+  }
+
+  //private
+  function _walletOfOwner(address owner) private view returns(uint256[] memory) {
+    uint256 balance = balanceOf(owner);
+    uint256[] memory tokenIds = new uint256[](balance);
+    for(uint256 i; i < balance; i++){
+      tokenIds[i] = tokenOfOwnerByIndex(owner, i);
+    }
+    return tokenIds;
+  }
 
   function mint( uint[2] calldata quantityList ) external payable {
     require( isActive,                      "Sale is not active"        );
@@ -61,14 +100,14 @@ contract FXCSale is Delegated, PaymentSplitter {
     ContractBalance[3] memory holdings = checkHoldings(msg.sender);
 
     if (quantityList[0] > 0) {
-      uint balanceAfterSale = quantityList[0] + balanceMap[msg.sender][0];
+      uint balanceAfterSale = quantityList[0] + holdings[2].balance;
       require(
         balanceAfterSale <= holdings[0].balance &&
         balanceAfterSale <= holdings[1].balance,
         "This wallet does not hold enough Pixel and Genesis Foxxies to mint the requested amount of FXC tokens."
       );
     } else if (quantityList[1] > 0) {
-      uint balanceAfterSale = quantityList[1] + balanceMap[msg.sender][1];
+      uint balanceAfterSale = quantityList[1] + holdings[2].balance;
       require(
         balanceAfterSale <= holdings[0].balance + holdings[1].balance,
         "This wallet does not hold enough Pixel or Genesis Foxxies to mint the requested amount of FXC tokens."
@@ -83,14 +122,16 @@ contract FXCSale is Delegated, PaymentSplitter {
     require( msg.value >= PRICE * totalQuantity, "Ether sent is not correct" );
     require( amountSold + totalQuantity <= MAX_SUPPLY, "Mint/order exceeds supply" );
 
-    for(uint i = 0; i < quantityList[0]; i++) {
-      tokenContract.mint(msg.sender, TOKEN_TYPES.GOLD);
-      balanceMap[msg.sender][0]++;
+    for(uint i = 0; i < quantityList[0]; ++i) {
+      uint tokenId = next();
+      tokenTypeMap[tokenId] = TOKEN_TYPES.GOLD;
+      _safeMint( msg.sender, tokenId, "" );
     }
     
-    for(uint i = 0; i < quantityList[1]; i++) {
-      tokenContract.mint(msg.sender, TOKEN_TYPES.SILVER);
-      balanceMap[msg.sender][1]++;
+    for(uint i = 0; i < quantityList[1]; ++i) {
+      uint tokenId = next();
+      tokenTypeMap[tokenId] = TOKEN_TYPES.SILVER;
+      _safeMint( msg.sender, tokenId, "" );
     }
   }
 
@@ -99,15 +140,17 @@ contract FXCSale is Delegated, PaymentSplitter {
     require(quantity.length == recipient.length, "Must provide equal quantities and recipients" );
 
     uint totalQuantity = 0;
-    for(uint i = 0; i < quantity.length; i++){
+    for(uint i = 0; i < quantity.length; ++i){
       totalQuantity += quantity[i];
     }
     require( amountSold + totalQuantity <= MAX_SUPPLY, "Mint/order exceeds supply" );
     delete totalQuantity;
 
-    for(uint i = 0; i < recipient.length; i++) {
-      for(uint j = 0; j < quantity[i]; j++) {
-        tokenContract.mint(recipient[i], _tokenType);
+    for(uint i = 0; i < recipient.length; ++i) {
+      for(uint j = 0; j < quantity[i]; ++j) {
+        uint tokenId = next();
+        tokenTypeMap[tokenId] = _tokenType;
+        _safeMint( recipient[i], tokenId, "" );
       }
     }
   }
@@ -145,8 +188,8 @@ contract FXCSale is Delegated, PaymentSplitter {
         );
       }
       results[2] = ContractBalance(
-          address(tokenContract),
-          tokenContract.balanceOf(_addr)
+          address(this),
+          balanceOf(_addr)
         );
       return results;
   }

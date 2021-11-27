@@ -9,12 +9,12 @@ pragma solidity ^0.8.0;
  *           mints + transfers          *
  ****************************************/
 
-import './Blimpie/ERC721EnumerableB.sol';
 import './Blimpie/Delegated.sol';
 import './foxxies/token-types.sol';
 import "@openzeppelin/contracts/utils/Strings.sol";
+import "@openzeppelin/contracts/token/ERC721/extensions/ERC721Enumerable.sol";
 
-contract FXC is Delegated, ERC721EnumerableB {
+contract FXCOld is Delegated, ERC721Enumerable {
   using Strings for uint;
 
   string private _baseTokenURI = '';
@@ -22,7 +22,7 @@ contract FXC is Delegated, ERC721EnumerableB {
 
   mapping(uint => TOKEN_TYPES) tokenTypeMap;
 
-  constructor() ERC721B( "Foxxies X Catharsis", "FXC", 0 ) {}
+  constructor() ERC721( "Foxxies X Catharsis", "FXC") {}
 
   //external
   function burn(uint256 tokenId) external {
@@ -49,18 +49,18 @@ contract FXC is Delegated, ERC721EnumerableB {
   }
 
   function mint( address to, TOKEN_TYPES tokenType ) external onlyDelegates {
-      uint tokenId = next();
+      uint tokenId = totalSupply() + 1;
       tokenTypeMap[tokenId] = tokenType;
       _safeMint( to, tokenId, "" );
   }
 
   //public
-  function tokenURI(uint tokenId) external view virtual override returns (string memory) {
+  function tokenURI(uint tokenId) public view virtual override returns (string memory) {
     require(_exists(tokenId), "ERC721Metadata: URI query for nonexistent token");
 
     TOKEN_TYPES tokenType = tokenTypeMap[tokenId];
 
-    return string(abi.encodePacked(_baseTokenURI, uint(tokenType).toString(), '/', tokenId.toString(), _tokenURISuffix));
+    return string(abi.encodePacked(_baseTokenURI, tokenType, '/', tokenId.toString(), _tokenURISuffix));
   }
 
   //private
