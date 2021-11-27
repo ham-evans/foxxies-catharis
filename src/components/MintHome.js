@@ -10,24 +10,24 @@ import "./MintHome.css";
 import { ethers } from 'ethers';
 import EthereumSession from '../lib/eth-session.js';
 
-/*
 const mainnetConfig = {
-    'CONTRACT': '0x68cf439BA5D2897524091Ef81Cb0A3D1F56E5500',
+    'CONTRACT': '0x5e9368831db40964a3bc88546d62c8c10a10929d',
     'CHAIN_ID':  1,
     'RPC_URL':   process.env.INFURA_API_MAINNET_KEY,
     'ABI':       ContractAbi
 }
-*/
 
+/*
 const rinkebyConfig = {
     'CONTRACT': '0xA13F4f9f978f2e7B14161f4C3b9eEAFA32064aCa',
     'CHAIN_ID':  4,
     'RPC_URL':   process.env.INFURA_API_RINKEBY_KEY,
     'ABI':       ContractAbi
 }
+*/
 
 
-const config = rinkebyConfig;
+const config = mainnetConfig;
 
 const CONNECTORS = {};
 CONNECTORS.Walletlink = new WalletLinkConnector({
