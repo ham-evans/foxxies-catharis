@@ -228,15 +228,19 @@ export default function MintHome () {
         //connected
         try{
             const price = String(tokenPrice * (parseInt(howManyTokensSilver) + parseInt(howManyTokensGold)));
-
+            
             const overrides = {
                 from: walletAddress,
                 value: price
             }
-
-            const gasBN = await ethereumSession.contract.estimateGas.mint([howManyTokensGold, howManyTokensSilver], overrides);
+            console.log(price)
+            console.log([parseInt(howManyTokensGold), parseInt(howManyTokensSilver)])
+            const gasBN = await ethereumSession.contract.estimateGas.mint([parseInt(howManyTokensGold), parseInt(howManyTokensSilver)], overrides);
+            console.log(3)
             const finalGasBN = gasBN.mul( ethers.BigNumber.from(11) ).div( ethers.BigNumber.from(10) );
+            console.log(4)
             overrides.gasLimit = finalGasBN.toString();
+            console.log(5)
 
             const txn = await contractWithSigner.mint([howManyTokensGold, howManyTokensSilver], overrides)
             await txn.wait();
@@ -309,7 +313,7 @@ export default function MintHome () {
                             <div className="minthome__signIn-inputSilver">
                                 <input 
                                     type="number" 
-                                    min="1"
+                                    min="0"
                                     max={maxMintSilver}
                                     value={howManyTokensSilver}
                                     onChange={ e => checkHowManySilver(e.target.value) }
@@ -321,7 +325,7 @@ export default function MintHome () {
                             <div className="minthome__signIn-inputGold">
                                 <input 
                                     type="number" 
-                                    min="1"
+                                    min="0"
                                     max={maxMintGold}
                                     value={howManyTokensGold}
                                     onChange={ e => checkHowManyGold(e.target.value) }
