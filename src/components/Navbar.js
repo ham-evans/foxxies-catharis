@@ -28,7 +28,7 @@ export default class Navbar extends Component {
           <ul className={this.state.isOpen ? "nav-menu active" : "nav-menu"}>
             <li className="nav-item">
               <Link className="nav-links" to={{ pathname: "https://www.catharsisdesign.com/foxxies" }} target="_blank" >
-                Back to Main Site
+                Back To Main Site
               </Link>
             </li>
             <li className="nav-item">
